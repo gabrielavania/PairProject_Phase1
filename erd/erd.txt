@@ -1,0 +1,50 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+Table Users {
+  id serial [primary key]
+  username varchar
+  password varchar
+  role varchar
+  profile_id integer [ref : - Profiles.id]
+  created_at timestamp
+}
+
+Table Profiles {
+  id serial [primary key]
+  user_id serial
+  email varchar
+  followers_count integer
+
+}
+
+Table Posts {
+  id serial [primary key]
+  title varchar
+  body varchar
+  user_id integer [ref : > Users.id]
+  status varchar
+  upvotes integer
+  category_id integer [ref : > Categories.id]
+  created_at date
+  likes integer
+}
+
+// Table Comments {
+//   id serial [primary key]
+//   username varchar
+//   user_id integer [ref : > Users.id]
+//   post_id integer [ref : > Posts.id]
+//   comment varchar
+//   createdAt date
+//   updatedAt date
+// }
+
+Table Categories {
+  id serial [primary key]
+  name varchar
+}
+
+// Table Likes {
+//   ProfileId integer [ref : > Profiles.id]
+//   PostId integer [ref : > Posts.id]
+// }
