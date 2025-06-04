@@ -2,6 +2,9 @@ const bcrypt = require('bcryptjs');
 const { Op } = require("sequelize")
 const { User, Profile, Post, Categories, Comment } = require('../models');
 const { noPwd } = require('../helpers/helpers');
+const { cloudinary } = require('../config/cloudinary');
+const streamifier = require('streamifier');
+
 
 class Controller {
 
@@ -12,7 +15,7 @@ class Controller {
             res.send(error)
         }
     }
-//HOME ROUTE
+    //HOME ROUTE
     static async showHome(req, res) {
         try {
             let userLogOn
@@ -27,8 +30,8 @@ class Controller {
     //AUTH ROUTES
     static async showLogin(req, res) {
         try {
-            let { logout,required } = req.query
-            res.render("loginPage", { logout,required })
+            let { logout, required } = req.query
+            res.render("loginPage", { logout, required })
         } catch (error) {
             console.log(error);
             res.send(error)
@@ -106,19 +109,17 @@ class Controller {
 
             const userId = req.userId
             let data = await Profile.findOne({
-                where : {user_id : userId},
-                include : User
+                where: { user_id: userId },
+                include: User
             }
-        )
-            if(!data){
+            )
+            if (!data) {
                 throw "Profile not found"
             }
 
-            let plainData = data.get({plain:true})
+            let plainData = data.get({ plain: true })
             plainData.User = noPwd(plainData.User)
-            console.log(JSON.stringify(plainData,null,2) + "<<<<<<<");
-            
-            res.render("userProfile",{ plainData })
+            res.render("userProfile", { plainData })
         } catch (error) {
             console.log(error);
             res.send(error)
@@ -129,20 +130,17 @@ class Controller {
         try {
             const userId = req.userId
             let data = await Profile.findOne({
-                where : {
-                    user_id : userId
+                where: {
+                    user_id: userId
                 },
-                include : User
+                include: User
             })
 
-            let plainData = data.get({plain:true})
+            let plainData = data.get({ plain: true })
             plainData.User = noPwd(plainData.User)
             // console.log(JSON.stringify(plainData,null,2));
-            
-            
-            
-            // res.render("editProfile", { data })
-            res.send(plainData)
+            res.render("editProfile", { plainData })
+            // res.send(plainData)
         } catch (error) {
             console.log(error);
             res.send(error)
@@ -151,12 +149,35 @@ class Controller {
 
     static async saveEditProfile(req, res) {
         try {
-            let { id } = req.params
+            let userId = req.userId
             let { name, email, discordId } = req.body
-            await Profile.create({
+            
+
+            let image
+
+            if (req.file) {
+                const streamUpload = (buffer) => {
+                    return new Promise((resolve, reject) => {
+                        const stream = cloudinary.uploader.upload_stream(
+                            { folder: "codelog_pic", resource_type: "image" },
+                            (error, result) => {
+                                if (error) reject(error);
+                                else resolve(result);
+                            }
+                        );
+                        streamifier.createReadStream(buffer).pipe(stream);
+                    });
+                };
+
+                const result = await streamUpload(req.file.buffer);
+                image = result.secure_url;
+            }
+
+            let updateProfile = await Profile.update({
                 name, email, discordId
             })
-            res.redirect(`/profile/${id}`)
+
+            res.redirect(`/profile?success=update`)
         } catch (error) {
             console.log(error);
             res.redirect(error)
@@ -172,20 +193,20 @@ class Controller {
                 order: [['createdAt', 'DESC']]
             };
 
-        if (search) {
-            options.where = {
-                title: {
-                [Op.iLike]: `%${search}%`
-                }
-            };
-        }
-            
+            if (search) {
+                options.where = {
+                    title: {
+                        [Op.iLike]: `%${search}%`
+                    }
+                };
+            }
+
             const posts = await Post.findAll(options)
             const category = await Category.findAll()
             // console.log(category)
-    
+
             // res.send(posts)
-            res.render("userDasboard", {posts, search, category})
+            res.render("userDasboard", { posts, search, category })
         } catch (error) {
             console.log(error);
             res.redirect(error)
@@ -203,14 +224,14 @@ class Controller {
             })
             // console.log(posts)
 
-            res.render("detailPost", {posts, comments, category, id})
+            res.render("detailPost", { posts, comments, category, id })
         } catch (error) {
             console.log(error);
             res.redirect(error)
         }
     }
 
-    static async addComment(req,res) {
+    static async addComment(req, res) {
         try {
             const { id } = req.params
             const { comment } = req.body

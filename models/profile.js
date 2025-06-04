@@ -28,7 +28,8 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     email: DataTypes.STRING,
-    discordId: DataTypes.STRING
+    discordId: DataTypes.STRING,
+    imageURL : DataTypes.TEXT
   }, {
     sequelize,
     modelName: 'Profile',

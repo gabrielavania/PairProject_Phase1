@@ -1,6 +1,7 @@
 const express = require('express')
 const Controller = require('../controllers/controller')
 const { loginCheck } = require('../middlewares/loginCheck')
+const upload = require('../middlewares/multer')
 const route = express.Router()
 
 
@@ -13,17 +14,15 @@ route.get("/register", Controller.showRegister)
 route.post("/register", Controller.actualRegister)
 route.get("/logout",Controller.logOut)
 
-route.get("/profile/",loginCheck, Controller.showUserProfile)
-route.get("/profile/edit",loginCheck, Controller.showEditprofile)
-
 //Dashboard
 route.get("/dashboard",loginCheck, Controller.userDasboard)
 route.get("/post/:id", Controller.detailPost)
 
 
 //Profile Page
-
-route.post("/profile/:id/edit",loginCheck, Controller.X)
+route.get("/profile/",loginCheck, Controller.showUserProfile)
+route.get("/profile/edit",loginCheck, Controller.showEditprofile)
+route.post("/profile/edit",loginCheck,upload.single("image"), Controller.saveEditProfile)
 
 //Dashboard
 route.get("/dashboard", Controller.userDasboard)

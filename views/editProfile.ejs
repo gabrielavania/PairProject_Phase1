@@ -7,17 +7,25 @@
   </head>
   <body>
     <%- include('partials/navbar') %>
-    <h1>Edit Profile</h1>
+    <h1>Edit <%= plainData.User.username %> Profile</h1>
     <br /><br />
-    <form action="" method="post">
+    <p>
+      <img
+        style="width: 150px; height: 100px"
+        src="<%= plainData.imageURL %>"
+        alt="Image Here"
+      />
+    </p>
+    <br /><br />
+    <form action="" method="post" enctype="multipart/form-data">
       <label for="name">Name</label><br />
       <input type="text" name="name" id="name" /><br />
       <br />
       <label for="email">Email</label><br />
       <input type="text" name="email" id="email" /><br />
       <br />
-      <label for="discordId">Discord </label>
-      <input type="text" name="discordId" id="discordId">
+      <label for="discordId">Discord </label><br />
+      <input type="text" name="discordId" id="discordId" />
     </form>
   </body>
 </html>
