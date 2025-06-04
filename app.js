@@ -11,6 +11,10 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }))
+app.use((req, res, next) => {
+    res.locals.username = req.session.username
+    next()
+})
 app.use(route)
 
 

@@ -28,6 +28,15 @@ module.exports = (sequelize, DataTypes) => {
     hooks : {
       beforeCreate : async (user) => {
         user.password = await bcrypt.hash(user.password,10)
+      },
+      afterCreate : async (user) => {
+        const {Profile} = sequelize.models
+        await Profile.create({
+          user_id : user.id,
+          email: '',
+          name: '',
+          discordId :''
+        })
       }
     }
   });
