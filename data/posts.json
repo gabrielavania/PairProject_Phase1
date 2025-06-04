@@ -1,0 +1,30 @@
+[
+  {
+    "title": "Perjalanan Dimulai: Phase 0 Hacktiv8",
+    "body": "Phase 0 tuh kayak pemanasan sebelum lari maraton! Di sini aku belajar dasar-dasar HTML, CSS, dan JavaScript. Awalnya sempet overwhelmed sih, apalagi pas ketemu coding logic, tapi makin lama makin kebentuk pola pikir problem-solving-nya. Gokil juga sih, ternyata bisa bikin website sendiri!",
+    "upvotes": 10,
+    "user_id": 1,
+    "category_id": 1
+  },
+  {
+    "title": "Phase 1: Back-End Time!",
+    "body": "Di Phase 1, fokusnya bener-bener kita belajar back-end. Ada yang bisa bantu tugas gradednya?",
+    "upvotes": 20,
+    "user_id": 1,
+    "category_id": 2
+  },
+  {
+    "title": "Phase 2: Gabungan Front-end & Back-End",
+    "body": "Di Phase 2, wahhh mulai pusing! Udah gabungan front-end & back-end",
+    "upvotes": 5,
+    "user_id": 1,
+    "category_id": 3
+  },
+  {
+    "title": "Final Project di Phase 3: Momen Mahasiswa Menjadi Engineer Seutuhnya",
+    "body": "Final Project adalah saat yang paling membanggakan sebagai instructor. Student lulus dan kemudian masuk ke dunia kerja",
+    "upvotes": 50,
+    "user_id": 2,
+    "category_id": 4
+  }
+]

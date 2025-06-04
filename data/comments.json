@@ -1,0 +1,42 @@
+[
+  {
+    "user_id": 2,
+    "post_id": 1,
+    "comment": "Wah relate banget! Aku juga awalnya takut ngoding, tapi ternyata seru ya!"
+  },
+  {
+    "user_id": 3,
+    "post_id": 1,
+    "comment": "Mantap! Semangat terus yaaa 💪"
+  },
+  {
+    "user_id": 1,
+    "post_id": 2,
+    "comment": "Graded-nya susah yaa 😅 Aku stuck di bagian async function nih."
+  },
+  {
+    "user_id": 2,
+    "post_id": 2,
+    "comment": "Kalau butuh bantu, boleh DM aku ya. Bisa kita diskusiin bareng ✨"
+  },
+  {
+    "user_id": 3,
+    "post_id": 3,
+    "comment": "Yaaa ampun bener banget. Front-end + Back-end = otak leleh 😂"
+  },
+  {
+    "user_id": 1,
+    "post_id": 3,
+    "comment": "Tapi makin paham sih alurnya gimana connect-in semuanya. Progress dikit-dikit 💪"
+  },
+  {
+    "user_id": 2,
+    "post_id": 4,
+    "comment": "Proud banget liat student berkembang sejauh ini 😭🔥"
+  },
+  {
+    "user_id": 3,
+    "post_id": 4,
+    "comment": "Salut sama semua yang survive sampe Final Project! 🎉"
+  }
+]

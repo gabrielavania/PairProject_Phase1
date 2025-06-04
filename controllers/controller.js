@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
-const {User} = require('../models');
+const { Op } = require("sequelize")
+const {User,Profile} = require('../models');
 class Controller {
 
     static async showLogin(req,res){
