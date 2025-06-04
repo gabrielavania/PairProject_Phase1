@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const { Op } = require("sequelize")
 const { User, Profile, Post, Categories, Comment } = require('../models');
 const { noPwd } = require('../helpers/helpers');
-const { cloudinary } = require('../config/cloudinary');
+const  cloudinary = require('../config/cloudinary');
 const streamifier = require('streamifier');
 
 
@@ -149,35 +149,47 @@ class Controller {
 
     static async saveEditProfile(req, res) {
         try {
-            let userId = req.userId
-            let { name, email, discordId } = req.body
+            let userId = req.userId;
+            let { name, email, discordId } = req.body;
+
+            let profile = await Profile.findOne({ where: { user_id: userId } });
             
-
-            let image
-
-            if (req.file) {
-                const streamUpload = (buffer) => {
-                    return new Promise((resolve, reject) => {
-                        const stream = cloudinary.uploader.upload_stream(
-                            { folder: "codelog_pic", resource_type: "image" },
-                            (error, result) => {
-                                if (error) reject(error);
-                                else resolve(result);
-                            }
-                        );
-                        streamifier.createReadStream(buffer).pipe(stream);
-                    });
-                };
-
-                const result = await streamUpload(req.file.buffer);
-                image = result.secure_url;
+            if (!profile) {
+                throw new Error('Profile not found');
             }
 
-            let updateProfile = await Profile.update({
-                name, email, discordId
-            })
+            let imageURL = profile.imageURL;
 
-            res.redirect(`/profile?success=update`)
+            if(req.file){
+                const streamUploader = (req) => {
+                    return new Promise ((resolve,reject) => {
+                        const stream = cloudinary.uploader.upload_stream((error,result) => {
+                            console.log(result + "<<<<<<<<<<<<<<")
+                            if (result){
+                                resolve(result)
+                            } else {
+                                reject(result)
+                            }
+                        });
+                        streamifier.createReadStream(req.file.buffer).pipe(stream)
+                    })
+                }
+                const result = await streamUploader(req)
+                console.log(result + "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+                imageURL = result.secure_url
+            }
+
+            console.log(imageURL + "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+
+            await profile.update({
+                name,
+                email,
+                discordId,
+                imageURL
+            });
+
+            res.redirect(`/profile?success=update`);
+
         } catch (error) {
             console.log(error);
             res.redirect(error)
