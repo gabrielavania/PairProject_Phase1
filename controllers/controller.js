@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const { Op } = require("sequelize")
-const { User, Profile, Post, Categories, Comment } = require('../models');
+const { User, Profile, Post, Category, Comment } = require('../models');
 const { noPwd } = require('../helpers/helpers');
 
 class Controller {
@@ -185,7 +185,36 @@ class Controller {
             // console.log(category)
     
             // res.send(posts)
-            res.render("userDasboard", {posts, search, category})
+            res.render("userDashboard", {posts, search, category})
+        } catch (error) {
+            console.log(error);
+            res.redirect(error)
+        }
+    }
+
+    static async getAllPosts(req, res) {
+        try {
+            const { search } = req.query;
+
+            let options = {
+                include: Category,
+                order: [['createdAt', 'DESC']]
+            };
+
+        if (search) {
+            options.where = {
+                title: {
+                [Op.iLike]: `%${search}%`
+                }
+            };
+        }
+            
+            const posts = await Post.findAll(options)
+            const category = await Category.findAll()
+            // console.log(category)
+    
+            // res.send(posts)
+            res.render("posts", {posts, search, category})
         } catch (error) {
             console.log(error);
             res.redirect(error)
@@ -210,12 +239,44 @@ class Controller {
         }
     }
 
+    static async showFormAdd(req,res) {
+        try {
+            const posts = await Post.findAll();
+
+            res.render('addPost', { posts });
+        } catch (error) {
+            console.log(error);
+
+            res.send(error);
+        }
+    }
+
+    static async saveFormAdd(req,res) {
+        try {
+            let { title, body } = req.body;
+
+            await Post.create({ 
+                title, 
+                body 
+            });
+
+            res.redirect('/posts');
+        } catch (err) {
+            console.log(err);
+            res.send(err.message);
+        }
+    }
+
     static async addComment(req,res) {
         try {
             const { id } = req.params
             const { comment } = req.body
 
             await Comment.create({
+                include: {
+                    model: Category,
+                    attributes: ['name'],
+                },
                 comment,
                 post_id: id
             });

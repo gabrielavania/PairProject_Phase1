@@ -18,15 +18,19 @@ route.get("/profile/edit",loginCheck, Controller.showEditprofile)
 
 //Dashboard
 route.get("/dashboard",loginCheck, Controller.userDasboard)
-route.get("/post/:id", Controller.detailPost)
-
-
-//Profile Page
-
-route.post("/profile/:id/edit",loginCheck, Controller.X)
 
 //Dashboard
-route.get("/dashboard", Controller.userDasboard)
+// route.get("/dashboard", Controller.userDasboard)
+
+//GetAllPost
+route.get("/posts", Controller.getAllPosts)
+
+//Add Post
+route.get("/posts/add", Controller.showFormAdd)
+route.post("/posts/add", Controller.saveFormAdd)
+
+//Profile Page
+route.post("/profile/:id/edit",loginCheck, Controller.X)
 
 //Post
 route.get("/post/:id", Controller.detailPost)
