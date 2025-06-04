@@ -6,8 +6,15 @@
     <title>Codelog Login</title>
 </head>
 <body>
+    <% if (logout) { %>
+        <p>Successfully Logged Out</p>
+      <% } %>
+
+      <% if (required) { %>
+        <p>Please login first</p>
+      <% } %>
+
     <h1>Login</h1>
-     
     <form action="/login" method="post">
         <label for="username">Username</label>
         <br>

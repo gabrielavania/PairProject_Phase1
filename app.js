@@ -13,6 +13,7 @@ app.use(session({
 }))
 app.use((req, res, next) => {
     res.locals.username = req.session.username
+    res.locals.userId = req.session.userId
     next()
 })
 app.use(route)

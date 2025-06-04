@@ -1,8 +1,16 @@
 const bcrypt = require('bcryptjs');
 const { Op } = require("sequelize")
-const { User, Profile, Post, Categories, Comment} = require('../models');
+const { User, Profile, Post, Categories, Comment } = require('../models');
 class Controller {
 
+    static async X(req, res) {
+        try {
+            res.send("Hello")
+        } catch (error) {
+            res.send(error)
+        }
+    }
+//HOME ROUTE
     static async showHome(req, res) {
         try {
             let userLogOn
@@ -14,12 +22,12 @@ class Controller {
         }
     }
 
+    //AUTH ROUTES
+
     static async showLogin(req, res) {
         try {
-            
-            let { logout } = req.query
-
-            res.render("loginPage", { logout })
+            let { logout,required } = req.query
+            res.render("loginPage", { logout,required })
         } catch (error) {
             console.log(error);
             res.send(error)
@@ -40,8 +48,7 @@ class Controller {
                     //SAVE SESSIONS HERE
                     req.session.userId = loginCredentials.id
                     req.session.username = loginCredentials.username
-                    //SUCCESS LOGIN SUCCESSFULLY NEED TO RENDER / REDIRECT
-                    res.redirect("/") /*NOT FIXED*/
+                    res.redirect("/")
                 } else {
                     throw "Invalid Username or Password"
                 }
@@ -71,15 +78,6 @@ class Controller {
         }
     }
 
-    static async showUserProfile(req, res) {
-        try {
-
-        } catch (error) {
-            console.log(error);
-            res.send(error)
-        }
-    }
-
     static async showRegister(req, res) {
         try {
             res.render("registerPage")
@@ -100,37 +98,60 @@ class Controller {
         }
     }
 
-    static async createProfile(req, res) {
+    //PROFILE ROUTES
+
+    static async showUserProfile(req, res) {
         try {
-            let user = await User.findbyPk()
-            res.render("profile")
+            let { id } = req.params
+            console.log(req.params.id);
+
+            let data = await Profile.findByPk(id,{
+                include : User
+            })
+            res.render("userProfile", { data })
+        } catch (error) {
+            console.log(error);
+            res.send(error)
+        }
+    }
+
+    static async showEditprofile(req, res) {
+        try {
+            let { id } = req.params
+            let data = await Profile.findByPk(id)
+            res.render("editProfile", { data })
+        } catch (error) {
+            console.log(error);
+            res.send(error)
+        }
+    }
+
+    static async saveEditProfile(req, res) {
+        try {
+            let { id } = req.params
+            let { name, email, discordId } = req.body
+            await Profile.create({
+                name, email, discordId
+            })
+            res.redirect(`/profile/${id}`)
         } catch (error) {
             console.log(error);
             res.redirect(error)
         }
     }
 
-    static async createProfile(req,res){
-        try {
-            res.render()
-        } catch (error) {
-            console.log(error);
-            res.redirect(error)
-        }
-    }
-
-    static async userDasboard(req,res) {
+    static async userDasboard(req, res) {
         try {
             const posts = await Post.findAll()
 
-            res.render("userDasboard", {posts})
+            res.render("userDasboard", { posts })
         } catch (error) {
             console.log(error);
             res.redirect(error)
         }
     }
 
-    static async detailPost(req,res) {
+    static async detailPost(req, res) {
         try {
             const { id } = req.params
             const posts = await Post.findByPk(+id)
@@ -140,7 +161,7 @@ class Controller {
             })
             // console.log(posts)
 
-            res.render("detailPost", {posts, comments, id})
+            res.render("detailPost", { posts, comments, id })
         } catch (error) {
             console.log(error);
             res.redirect(error)

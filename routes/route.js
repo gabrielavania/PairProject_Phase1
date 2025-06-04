@@ -1,6 +1,8 @@
 const express = require('express')
 const Controller = require('../controllers/controller')
+const { loginCheck } = require('../middlewares/loginCheck')
 const route = express.Router()
+
 
 //Landing Page
 route.get("/", Controller.showHome)
@@ -12,14 +14,14 @@ route.post("/register", Controller.actualRegister)
 route.get("/logout",Controller.logOut)
 
 //Dashboard
-route.get("/dashboard", Controller.userDasboard)
+route.get("/dashboard",loginCheck, Controller.userDasboard)
 route.get("/post/:id", Controller.detailPost)
 
 
 //Profile Page
-// route.get("/:id/profile", Controller.X)
-// route.get("/:id/profile/edit", Controller.X)
-// route.post("/:id/profile/edit", Controller.X)
+route.get("/:id/profile",loginCheck, Controller.showUserProfile)
+route.get("/:id/profile/edit",loginCheck, Controller.showEditprofile)
+route.post("/:id/profile/edit",loginCheck, Controller.X)
 
 
 
