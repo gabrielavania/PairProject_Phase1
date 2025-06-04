@@ -10,7 +10,7 @@ Table Users {
 
 Table Profiles {
   id serial [primary key]
-  user_id serial [ref : - Users.id]
+  user_id Integer [ref : - Users.id]
   name varchasr
   email varchar
   discordId varchar
