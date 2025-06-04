@@ -11,6 +11,11 @@ route.post("/login", Controller.actualLogin)
 route.get("/register", Controller.showRegister)
 route.post("/register", Controller.actualRegister)
 
+//Dashboard
+route.get("/dashboard", Controller.userDasboard)
+route.get("/post/:id", Controller.detailPost)
+
+
 //Profile Page
 
 
