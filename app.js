@@ -9,13 +9,18 @@ app.set("view engine", "ejs")
 app.use(session({
     secret: 'secret-key',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24
+    }
 }))
 app.use((req, res, next) => {
     res.locals.username = req.session.username
     res.locals.userId = req.session.userId
     next()
 })
+app.use(express.static('public'));
+
 app.use(route)
 
 

@@ -113,7 +113,12 @@ class Controller {
             if(!data){
                 throw "Profile not found"
             }
-            res.render("userProfile",{ data })
+
+            let plainData = data.get({plain:true})
+            plainData.User = noPwd(plainData.User)
+            console.log(JSON.stringify(plainData,null,2) + "<<<<<<<");
+            
+            res.render("userProfile",{ plainData })
         } catch (error) {
             console.log(error);
             res.send(error)

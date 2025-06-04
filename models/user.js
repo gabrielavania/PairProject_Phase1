@@ -21,7 +21,9 @@ module.exports = (sequelize, DataTypes) => {
   User.init({
     username: DataTypes.STRING,
     password: DataTypes.STRING,
-    role: DataTypes.STRING
+    role: DataTypes.STRING,
+    discordId : DataTypes.STRING,
+    imageURL : DataTypes.TEXT
   }, {
     sequelize,
     modelName: 'User',
@@ -35,7 +37,8 @@ module.exports = (sequelize, DataTypes) => {
           user_id : user.id,
           email: '',
           name: '',
-          discordId :''
+          discordId :'',
+          imageURL : '/images/default-avatar.png'
         })
       }
     }
