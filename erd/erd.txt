@@ -11,8 +11,9 @@ Table Users {
 Table Profiles {
   id serial [primary key]
   user_id serial [ref : - Users.id]
+  name varchasr
   email varchar
-  followers_count integer
+  discordId varchar
 }
 
 Table Posts {
