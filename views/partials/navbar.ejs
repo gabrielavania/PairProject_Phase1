@@ -1,0 +1,14 @@
+<div>
+  <h1>CodeLogs</h1>
+  <hr />
+  <% if (username) { %>
+  <button><a href="/logout">Log Out</a></button><br />
+  <%= username %> <% } else {%>
+  <button><a href="/login">Log In</a></button>
+  <%} %>
+  <span>
+    <a href="/dashboard/">Home</a>
+    <a href="/profile">Profile</a>
+    <a href="/dashboard">Post</a>
+  </span>
+</div>
