@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs');
 const { Op } = require("sequelize")
 const { User, Profile, Post, Categories, Comment } = require('../models');
+const { noPwd } = require('../helpers/helpers');
+
 class Controller {
 
     static async X(req, res) {
@@ -23,7 +25,6 @@ class Controller {
     }
 
     //AUTH ROUTES
-
     static async showLogin(req, res) {
         try {
             let { logout,required } = req.query
@@ -102,13 +103,17 @@ class Controller {
 
     static async showUserProfile(req, res) {
         try {
-            let { id } = req.params
-            console.log(req.params.id);
 
-            let data = await Profile.findByPk(id,{
+            const userId = req.userId
+            let data = await Profile.findOne({
+                where : {user_id : userId},
                 include : User
-            })
-            res.render("userProfile", { data })
+            }
+        )
+            if(!data){
+                throw "Profile not found"
+            }
+            res.render("userProfile",{ data })
         } catch (error) {
             console.log(error);
             res.send(error)
@@ -117,9 +122,22 @@ class Controller {
 
     static async showEditprofile(req, res) {
         try {
-            let { id } = req.params
-            let data = await Profile.findByPk(id)
-            res.render("editProfile", { data })
+            const userId = req.userId
+            let data = await Profile.findOne({
+                where : {
+                    user_id : userId
+                },
+                include : User
+            })
+
+            let plainData = data.get({plain:true})
+            plainData.User = noPwd(plainData.User)
+            // console.log(JSON.stringify(plainData,null,2));
+            
+            
+            
+            // res.render("editProfile", { data })
+            res.send(plainData)
         } catch (error) {
             console.log(error);
             res.send(error)

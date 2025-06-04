@@ -3,13 +3,12 @@
   <hr />
   <% if (username) { %>
   <button><a href="/logout">Log Out</a></button><br />
-  <%= username %> 
-  <% } else {%>
-    <button><a href="/login">Log In</a></button>
-     <%} %>
+  <%= username %> <% } else {%>
+  <button><a href="/login">Log In</a></button>
+  <%} %>
   <span>
     <a href="/">Home</a>
-    <a href="/<%= userId %>/profile">Profile</a>
+    <a href="/profile">Profile</a>
     <a href="">Post</a>
   </span>
 </div>

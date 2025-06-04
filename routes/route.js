@@ -13,15 +13,17 @@ route.get("/register", Controller.showRegister)
 route.post("/register", Controller.actualRegister)
 route.get("/logout",Controller.logOut)
 
+route.get("/profile/",loginCheck, Controller.showUserProfile)
+route.get("/profile/edit",loginCheck, Controller.showEditprofile)
+
 //Dashboard
 route.get("/dashboard",loginCheck, Controller.userDasboard)
 route.get("/post/:id", Controller.detailPost)
 
 
 //Profile Page
-route.get("/:id/profile",loginCheck, Controller.showUserProfile)
-route.get("/:id/profile/edit",loginCheck, Controller.showEditprofile)
-route.post("/:id/profile/edit",loginCheck, Controller.X)
+
+route.post("/profile/:id/edit",loginCheck, Controller.X)
 
 
 

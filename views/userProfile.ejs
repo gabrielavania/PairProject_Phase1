@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile</title>
-</head>
-<body>
+  </head>
+  <body>
     <%- include('partials/navbar') %>
-    <h1>Profile</h1>
-
-    
-</body>
+    <h1>Profile of <%= data.User.username %></h1>
+    <p>Name: <%= data.name || 'Not set' %></p>
+    <p>Email: <%= data.email || 'Not set' %></p>
+    <p>Discord ID: <%= data.discordId || 'Not set' %></p>
+    <br>
+    <button><a href="/profile/edit">Edit Profile</a></button>
+  </body>
 </html>
