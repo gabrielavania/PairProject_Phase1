@@ -68,7 +68,12 @@ class Controller {
     }
 
     static async createProfile(req,res){
-        
+        try {
+            res.render()
+        } catch (error) {
+            console.log(error);
+            res.redirect(error)
+        }
     }
 }
 
