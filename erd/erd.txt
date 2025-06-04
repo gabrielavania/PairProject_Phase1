@@ -5,13 +5,12 @@ Table Users {
   username varchar
   password varchar
   role varchar
-  profile_id integer [ref : - Profiles.id,unique]
   created_at timestamp
 }
 
 Table Profiles {
   id serial [primary key]
-  user_id serial
+  user_id serial [ref : - Users.id]
   email varchar
   followers_count integer
 }
