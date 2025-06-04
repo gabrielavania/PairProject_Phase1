@@ -2,7 +2,7 @@
   "development": {
     "username": "postgres",
     "password": "postgres",
-    "database": "h8ddit-db",
+    "database": "",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
