@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const { Op } = require("sequelize")
-const { User, Profile } = require('../models');
+const { User, Profile, Post, Categories, Comment} = require('../models');
 class Controller {
 
     static async showHome(req, res) {
@@ -109,6 +109,45 @@ class Controller {
             res.redirect(error)
         }
     }
+
+    static async createProfile(req,res){
+        try {
+            res.render()
+        } catch (error) {
+            console.log(error);
+            res.redirect(error)
+        }
+    }
+
+    static async userDasboard(req,res) {
+        try {
+            const posts = await Post.findAll()
+
+            res.render("userDasboard", {posts})
+        } catch (error) {
+            console.log(error);
+            res.redirect(error)
+        }
+    }
+
+    static async detailPost(req,res) {
+        try {
+            const { id } = req.params
+            const posts = await Post.findByPk(+id)
+
+            const comments = await Comment.findAll({
+                where: { post_id: id }
+            })
+            // console.log(posts)
+
+            res.render("detailPost", {posts, comments, id})
+        } catch (error) {
+            console.log(error);
+            res.redirect(error)
+        }
+    }
+
+
 }
 
 module.exports = Controller
