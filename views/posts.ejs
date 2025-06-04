@@ -66,6 +66,7 @@
 
   <div class="container">
       <% posts.forEach(el => { %>
+        <!-- <%= JSON.stringify(el.Category) %> -->
         <div class="post">
         <h2><a href="/post/<%= el.id %>"><%= el.title %></h2></a>
         <p><%= el.body %></p>

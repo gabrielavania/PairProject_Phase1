@@ -27,7 +27,7 @@ route.get("/posts", Controller.getAllPosts)
 
 //Add Post
 route.get("/posts/add", Controller.showFormAdd)
-route.post("/posts/add", Controller.saveFormAdd)
+// route.post("/posts/add", Controller.saveFormAdd)
 
 //Profile Page
 route.post("/profile/:id/edit",loginCheck, Controller.X)

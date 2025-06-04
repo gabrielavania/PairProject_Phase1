@@ -251,21 +251,26 @@ class Controller {
         }
     }
 
-    static async saveFormAdd(req,res) {
-        try {
-            let { title, body } = req.body;
+    // static async saveFormAdd(req,res) {
+    //     try {
+    //         let { title, body, user_id } = req.body;
 
-            await Post.create({ 
-                title, 
-                body 
-            });
+    //         await Post.create({ 
+    //             include: {
+    //                 model: Category,
+    //                 attributes: ['name'],
+    //             },
+    //             title, 
+    //             body,
+    //             id: user_id
+    //         });
 
-            res.redirect('/posts');
-        } catch (err) {
-            console.log(err);
-            res.send(err.message);
-        }
-    }
+    //         res.redirect('/posts');
+    //     } catch (err) {
+    //         console.log(err);
+    //         res.send(err.message);
+    //     }
+    // }
 
     static async addComment(req,res) {
         try {
@@ -273,10 +278,6 @@ class Controller {
             const { comment } = req.body
 
             await Comment.create({
-                include: {
-                    model: Category,
-                    attributes: ['name'],
-                },
                 comment,
                 post_id: id
             });
