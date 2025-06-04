@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const { Op } = require("sequelize")
-const { User, Profile, Post, Categories, Comment } = require('../models');
+const { User, Profile, Post, Category, Comment } = require('../models');
 const { noPwd } = require('../helpers/helpers');
 const  cloudinary = require('../config/cloudinary');
 const streamifier = require('streamifier');
