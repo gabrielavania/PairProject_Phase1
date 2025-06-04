@@ -44,11 +44,26 @@
   </style>
 </head>
 <body>
+<%- include('partials/navbar') %>
+<br>
+<br>
+<br>
+
+<form action="/dashboard" method="get">
+  <input 
+    type="text" 
+    name="search" 
+    placeholder="Search post title..." 
+    value="<%= search || '' %>">
+  <button type="submit">Search</button>
+</form>
+
   <div class="container">
       <% posts.forEach(el => { %>
         <div class="post">
         <h2><a href="/post/<%= el.id %>"><%= el.title %></h2></a>
         <p><%= el.body %></p>
+        <p>Category: <%= el.Category.name %></p>
     </div>
     <% }) %>
   </div>

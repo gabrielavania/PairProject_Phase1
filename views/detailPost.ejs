@@ -52,17 +52,30 @@
   </style>
 </head>
 <body>
+
+<%- include('partials/navbar') %>
+<br>
+<br>
+<br>
+
   <div class="container">
     <h1><%= posts.title %></h1>
     <div class="post-body">
       <p><%= posts.body %></p>
     </div>
+    <p>Category: <%= category.name %></p>
 
     <div class="comments">
       <h3>Comments</h3>
         <% comments.forEach(el => { %>
           <div class="comment"><%= el.comment %></div>
         <% }) %>
+        <form action="/post/<%= el.id %>/comment" method="post">
+        <p><label for="comment">Add comment:</label></p>
+        <textarea id="comment" name="comment" rows="4" cols="50"></textarea>
+        <br>
+        <input type="submit" value="Submit">
+        </form>
     </div>
   </div>
 </body>

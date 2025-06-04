@@ -25,10 +25,15 @@ route.get("/post/:id", Controller.detailPost)
 
 route.post("/profile/:id/edit",loginCheck, Controller.X)
 
-
+//Dashboard
+route.get("/dashboard", Controller.userDasboard)
 
 //Post
+route.get("/post/:id", Controller.detailPost)
+route.post("/post/:id", Controller.detailPost)
 
+//Comment
+route.post('/post/:id/comment', Controller.addComment);
 
 
 module.exports = route

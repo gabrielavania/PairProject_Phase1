@@ -165,9 +165,27 @@ class Controller {
 
     static async userDasboard(req, res) {
         try {
-            const posts = await Post.findAll()
+            const { search } = req.query;
 
-            res.render("userDasboard", { posts })
+            let options = {
+                include: [Category],
+                order: [['createdAt', 'DESC']]
+            };
+
+        if (search) {
+            options.where = {
+                title: {
+                [Op.iLike]: `%${search}%`
+                }
+            };
+        }
+            
+            const posts = await Post.findAll(options)
+            const category = await Category.findAll()
+            // console.log(category)
+    
+            // res.send(posts)
+            res.render("userDasboard", {posts, search, category})
         } catch (error) {
             console.log(error);
             res.redirect(error)
@@ -178,16 +196,34 @@ class Controller {
         try {
             const { id } = req.params
             const posts = await Post.findByPk(+id)
+            const category = await Category.findByPk(+id)
 
             const comments = await Comment.findAll({
                 where: { post_id: id }
             })
             // console.log(posts)
 
-            res.render("detailPost", { posts, comments, id })
+            res.render("detailPost", {posts, comments, category, id})
         } catch (error) {
             console.log(error);
             res.redirect(error)
+        }
+    }
+
+    static async addComment(req,res) {
+        try {
+            const { id } = req.params
+            const { comment } = req.body
+
+            await Comment.create({
+                comment,
+                post_id: id
+            });
+
+            res.redirect(`/post/${id}/comment`);
+        } catch (err) {
+            console.log(err);
+            res.send(err.message);
         }
     }
 
