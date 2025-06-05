@@ -3,9 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>H8DIKA REGISTER</title>
+    <title>Codelog Register</title>
   </head>
   <body>
+    <% if (errors) { %>
+    <ul>
+      <% errors.forEach(error => { %>
+      <li style="color: red"><%= error %></li>
+      <% }) %>
+    </ul>
+    <% } %>
     <h1>Register</h1>
     <form action="/register" method="post">
       <label for="username">Username</label>

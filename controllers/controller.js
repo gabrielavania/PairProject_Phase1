@@ -84,7 +84,11 @@ class Controller {
 
     static async showRegister(req, res) {
         try {
-            res.render("registerPage")
+            let {errors} = req.query
+            if(errors){
+                errors = errors.split(",")
+            }
+            res.render("registerPage",{errors})
         } catch (error) {
             console.log(error);
             res.send(error)
@@ -97,6 +101,11 @@ class Controller {
             await User.create({ username, password })
             res.redirect("/login")
         } catch (error) {
+            if (error.name == "SequelizeValidationError" || error.name == 'SequelizeUniqueConstraintError') {
+                let msg = error.errors.map(el => el.message)
+                msg = msg.join(",")
+                res.redirect(`/register?errors=${msg}`)
+            }
             console.log(error);
             res.send(error)
         }
