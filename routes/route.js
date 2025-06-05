@@ -16,8 +16,16 @@ route.get("/logout",Controller.logOut)
 
 //Dashboard
 route.get("/dashboard",loginCheck, Controller.userDasboard)
-route.get("/post/:id", Controller.detailPost)
 
+//Dashboard
+// route.get("/dashboard", Controller.userDasboard)
+
+//GetAllPost
+route.get("/posts", Controller.getAllPosts)
+
+//Add Post
+route.get("/posts/add", Controller.showFormAdd)
+route.post("/posts/add", Controller.saveFormAdd)
 
 //Profile Page
 route.get("/profile/",loginCheck, Controller.showUserProfile)
