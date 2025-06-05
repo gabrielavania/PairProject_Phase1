@@ -8,7 +8,7 @@
   <body>
     <%- include('partials/navbar') %>
     <h1>Profile of <%= plainData.User.username %></h1>
-    <p><img src="<%= plainData.imageURL %>" alt="Image Here"></p>
+    <p><img style="width: 150px;height: 100px;" src="<%= plainData.imageURL %>" alt="Image Here"></p>
     <p>Name: <%= plainData.name || 'Not set' %></p>
     <p>Email: <%= plainData.email || 'Not set' %></p>
     <p>Discord ID: <%= plainData.discordId || 'Not set' %></p>

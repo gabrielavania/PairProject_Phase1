@@ -1,7 +1,10 @@
 const bcrypt = require('bcryptjs');
 const { Op } = require("sequelize")
-const { User, Profile, Post, Categories, Comment } = require('../models');
+const { User, Profile, Post, Category, Comment } = require('../models');
 const { noPwd } = require('../helpers/helpers');
+const  cloudinary = require('../config/cloudinary');
+const streamifier = require('streamifier');
+
 
 class Controller {
 
@@ -12,7 +15,7 @@ class Controller {
             res.send(error)
         }
     }
-//HOME ROUTE
+    //HOME ROUTE
     static async showHome(req, res) {
         try {
             let userLogOn
@@ -27,8 +30,8 @@ class Controller {
     //AUTH ROUTES
     static async showLogin(req, res) {
         try {
-            let { logout,required } = req.query
-            res.render("loginPage", { logout,required })
+            let { logout, required } = req.query
+            res.render("loginPage", { logout, required })
         } catch (error) {
             console.log(error);
             res.send(error)
@@ -81,7 +84,11 @@ class Controller {
 
     static async showRegister(req, res) {
         try {
-            res.render("registerPage")
+            let {errors} = req.query
+            if(errors){
+                errors = errors.split(",")
+            }
+            res.render("registerPage",{errors})
         } catch (error) {
             console.log(error);
             res.send(error)
@@ -94,6 +101,11 @@ class Controller {
             await User.create({ username, password })
             res.redirect("/login")
         } catch (error) {
+            if (error.name == "SequelizeValidationError" || error.name == 'SequelizeUniqueConstraintError') {
+                let msg = error.errors.map(el => el.message)
+                msg = msg.join(",")
+                res.redirect(`/register?errors=${msg}`)
+            }
             console.log(error);
             res.send(error)
         }
@@ -106,19 +118,17 @@ class Controller {
 
             const userId = req.userId
             let data = await Profile.findOne({
-                where : {user_id : userId},
-                include : User
+                where: { user_id: userId },
+                include: User
             }
-        )
-            if(!data){
+            )
+            if (!data) {
                 throw "Profile not found"
             }
 
-            let plainData = data.get({plain:true})
+            let plainData = data.get({ plain: true })
             plainData.User = noPwd(plainData.User)
-            console.log(JSON.stringify(plainData,null,2) + "<<<<<<<");
-            
-            res.render("userProfile",{ plainData })
+            res.render("userProfile", { plainData })
         } catch (error) {
             console.log(error);
             res.send(error)
@@ -129,20 +139,17 @@ class Controller {
         try {
             const userId = req.userId
             let data = await Profile.findOne({
-                where : {
-                    user_id : userId
+                where: {
+                    user_id: userId
                 },
-                include : User
+                include: User
             })
 
-            let plainData = data.get({plain:true})
+            let plainData = data.get({ plain: true })
             plainData.User = noPwd(plainData.User)
             // console.log(JSON.stringify(plainData,null,2));
-            
-            
-            
-            // res.render("editProfile", { data })
-            res.send(plainData)
+            res.render("editProfile", { plainData })
+            // res.send(plainData)
         } catch (error) {
             console.log(error);
             res.send(error)
@@ -151,12 +158,47 @@ class Controller {
 
     static async saveEditProfile(req, res) {
         try {
-            let { id } = req.params
-            let { name, email, discordId } = req.body
-            await Profile.create({
-                name, email, discordId
-            })
-            res.redirect(`/profile/${id}`)
+            let userId = req.userId;
+            let { name, email, discordId } = req.body;
+
+            let profile = await Profile.findOne({ where: { user_id: userId } });
+            
+            if (!profile) {
+                throw new Error('Profile not found');
+            }
+
+            let imageURL = profile.imageURL;
+
+            if(req.file){
+                const streamUploader = (req) => {
+                    return new Promise ((resolve,reject) => {
+                        const stream = cloudinary.uploader.upload_stream((error,result) => {
+                            console.log(result + "<<<<<<<<<<<<<<")
+                            if (result){
+                                resolve(result)
+                            } else {
+                                reject(result)
+                            }
+                        });
+                        streamifier.createReadStream(req.file.buffer).pipe(stream)
+                    })
+                }
+                const result = await streamUploader(req)
+                console.log(result + "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+                imageURL = result.secure_url
+            }
+
+            console.log(imageURL + "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+
+            await profile.update({
+                name,
+                email,
+                discordId,
+                imageURL
+            });
+
+            res.redirect(`/profile?success=update`);
+
         } catch (error) {
             console.log(error);
             res.redirect(error)
@@ -169,6 +211,35 @@ class Controller {
 
             let options = {
                 include: [Category],
+                order: [['createdAt', 'DESC']]
+            };
+
+            if (search) {
+                options.where = {
+                    title: {
+                        [Op.iLike]: `%${search}%`
+                    }
+                };
+            }
+
+            const posts = await Post.findAll(options)
+            const category = await Category.findAll()
+            // console.log(category)
+
+            // res.send(posts)
+            res.render("userDashboard", {posts, search, category})
+        } catch (error) {
+            console.log(error);
+            res.redirect(error)
+        }
+    }
+
+    static async getAllPosts(req, res) {
+        try {
+            const { search } = req.query;
+
+            let options = {
+                include: Category,
                 order: [['createdAt', 'DESC']]
             };
 
@@ -185,7 +256,7 @@ class Controller {
             // console.log(category)
     
             // res.send(posts)
-            res.render("userDasboard", {posts, search, category})
+            res.render("posts", {posts, search, category})
         } catch (error) {
             console.log(error);
             res.redirect(error)
@@ -203,19 +274,79 @@ class Controller {
             })
             // console.log(posts)
 
-            res.render("detailPost", {posts, comments, category, id})
+            res.render("detailPost", { posts, comments, category, id })
         } catch (error) {
             console.log(error);
             res.redirect(error)
         }
     }
 
-    static async addComment(req,res) {
+    static async showFormAdd(req,res) {
+        try {
+            const posts = await Post.findAll();
+
+            res.render('addPost', { posts });
+        } catch (error) {
+            console.log(error);
+
+            res.send(error);
+        }
+    }
+
+    static async saveFormAdd(req,res) {
+        try {
+            let { title, body } = req.body;
+
+            await Post.create({ 
+                title, 
+                body 
+            });
+
+            res.redirect('/posts');
+        } catch (err) {
+            console.log(err);
+            res.send(err.message);
+        }
+    }
+
+    static async showFormAdd(req,res) {
+        try {
+            const posts = await Post.findAll();
+
+            res.render('addPost', { posts });
+        } catch (error) {
+            console.log(error);
+
+            res.send(error);
+        }
+    }
+
+    static async saveFormAdd(req,res) {
+        try {
+            let { title, body } = req.body;
+
+            await Post.create({ 
+                title, 
+                body 
+            });
+
+            res.redirect('/posts');
+        } catch (err) {
+            console.log(err);
+            res.send(err.message);
+        }
+    }
+
+    static async addComment(req, res) {
         try {
             const { id } = req.params
             const { comment } = req.body
 
             await Comment.create({
+                include: {
+                    model: Category,
+                    attributes: ['name'],
+                },
                 comment,
                 post_id: id
             });

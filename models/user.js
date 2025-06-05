@@ -13,35 +13,63 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      User.hasOne(models.Profile,{
-        foreignKey:"user_id"
+      User.hasOne(models.Profile, {
+        foreignKey: "user_id"
       })
       User.hasMany(models.Comment, {
-        foreignKey:"user_id"
+        foreignKey: "user_id"
       })
     }
   }
   User.init({
-    username: DataTypes.STRING,
-    password: DataTypes.STRING,
-    role: DataTypes.STRING,
-    discordId : DataTypes.STRING,
-    imageURL : DataTypes.TEXT
+    username: {
+      type: DataTypes.STRING,
+      allowNull : false,
+      unique : {
+        name:"unique-username",
+        msg :"Username has already been taken"
+      },
+      validate : {
+        notEmpty : {
+          msg : "Username cannot be empty"
+        }
+      }
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull : false,
+      validate:{
+        len : {
+          args:[8],
+          msg:"Password must be minimum 8 characters long"
+        }
+      }
+
+    },
+    role: {
+      type: DataTypes.STRING
+
+    }
   }, {
     sequelize,
     modelName: 'User',
-    hooks : {
-      beforeCreate : async (user) => {
-        user.password = await bcrypt.hash(user.password,10)
+    hooks: {
+      beforeCreate: async (user) => {
+        user.password = await bcrypt.hash(user.password, 10)
+
+        if (!user.role) {
+          user.role = "student";
+        }
+
       },
-      afterCreate : async (user) => {
-        const {Profile} = sequelize.models
+      afterCreate: async (user) => {
+        const { Profile } = sequelize.models
         await Profile.create({
-          user_id : user.id,
+          user_id: user.id,
           email: '',
           name: '',
-          discordId :'',
-          imageURL : '/images/default-avatar.png'
+          discordId: '',
+          imageURL: '/images/default-avatar.png'
         })
       }
     }

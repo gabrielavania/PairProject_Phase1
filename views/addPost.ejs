@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Add Post</title>
+</head>
+<body>
+    <hr>
+<%- include('partials/navbar') %>
+
+    <hr>
+
+    <h2>Form Add Post</h2>
+
+    <form action="/posts/add" method="post">
+        <label for="title">Title</label> <br>
+        <input type="text" name="title" id="title"> <br> <br>
+
+        <label for="body">Body</label> <br>
+        <textarea type="textarea" name="body" id="body"></textarea>
+
+        <br> <br>
+
+        <button type="submit">
+            Add
+        </button>
+    </form>
+
+    <br>
+
+    <button>
+        <a href="/posts">Back</a>
+    </button>
+</body>
+</html>
